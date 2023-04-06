@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.whattoeat.app'
+    namespace 'com.food.roulette'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.whattoeat.app"
+        applicationId "com.food.roulette"
         minSdk 29
         targetSdk 33
         versionCode 1

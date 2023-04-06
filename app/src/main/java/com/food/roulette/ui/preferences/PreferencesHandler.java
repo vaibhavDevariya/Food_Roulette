@@ -1,4 +1,4 @@
-package com.whattoeat.app.ui.preferences;
+package com.food.roulette.ui.preferences;
 
 public class PreferencesHandler {
 

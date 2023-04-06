@@ -1,7 +1,6 @@
-package com.whattoeat.app.ui.preferences;
+package com.food.roulette.ui.preferences;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,10 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.whattoeat.app.R;
-import com.whattoeat.app.ui.tabs.BreakfastFragment;
-import com.whattoeat.app.ui.tabs.DinnerFragment;
-import com.whattoeat.app.ui.tabs.LunchFragment;
+import com.food.roulette.R;
+import com.food.roulette.ui.tabs.BreakfastFragment;
+import com.food.roulette.ui.tabs.DinnerFragment;
+import com.food.roulette.ui.tabs.LunchFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;

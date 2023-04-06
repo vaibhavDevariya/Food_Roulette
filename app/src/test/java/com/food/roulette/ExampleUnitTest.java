@@ -1,4 +1,4 @@
-package com.whattoeat.app;
+package com.food.roulette;
 
 import org.junit.Test;
 

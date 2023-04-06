@@ -1,4 +1,4 @@
-package com.whattoeat.app.ui.tabs;
+package com.food.roulette.ui.tabs;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.whattoeat.app.R;
+import com.food.roulette.R;
 
-public class BreakfastFragment extends Fragment {
-    public BreakfastFragment() {
+public class DinnerFragment extends Fragment {
+    public DinnerFragment() {
         // Required empty public constructor
     }
 
@@ -23,7 +23,7 @@ public class BreakfastFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         ListView listView = rootView.findViewById(R.id.listView);
-        String[] listItems = this.getArguments().getStringArray("BreakfastItems");
+        String[] listItems = this.getArguments().getStringArray("DinnerItems");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_1, listItems);

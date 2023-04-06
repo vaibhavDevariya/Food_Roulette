@@ -1,4 +1,4 @@
-package com.whattoeat.app.ui.CoreEngine;
+package com.food.roulette.ui.CoreEngine;
 
 import org.json.JSONObject;
 

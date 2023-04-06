@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">What To Eat</string>
+    <string name="app_name">Food Roulette</string>
     <string name="title_home">Home</string>
     <string name="title_pref">Preferences</string>
     <string name="tomorrow_menu">TOMORROW\'s MENU</string>

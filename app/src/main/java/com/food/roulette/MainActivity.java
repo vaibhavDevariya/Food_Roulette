@@ -1,7 +1,6 @@
-package com.whattoeat.app;
+package com.food.roulette;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -9,15 +8,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.whattoeat.app.ui.CoreEngine.FoodMenuGenerator;
-import com.whattoeat.app.ui.home.HomeFragment;
-import com.whattoeat.app.ui.preferences.PreferencesFragment;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.food.roulette.ui.CoreEngine.FoodMenuGenerator;
+import com.food.roulette.ui.home.HomeFragment;
+import com.food.roulette.ui.preferences.PreferencesFragment;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
