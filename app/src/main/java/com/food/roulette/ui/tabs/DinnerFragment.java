@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.food.roulette.R;
+import com.food.roulette.ui.preferences.PreferencesHandler;
+
+import java.util.ArrayList;
 
 public class DinnerFragment extends Fragment {
     public DinnerFragment() {
@@ -23,11 +26,18 @@ public class DinnerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         ListView listView = rootView.findViewById(R.id.listView);
-        String[] listItems = this.getArguments().getStringArray("DinnerItems");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, listItems);
+        ArrayList<String> listItems = this.getArguments().getStringArrayList("DinnerItems");
+
+        ListViewAdapter adapter = new ListViewAdapter(getContext(), listItems);
         listView.setAdapter(adapter);
+
+
+//        String[] listItems = this.getArguments().getStringArray("DinnerItems");
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+//                android.R.layout.simple_list_item_1, listItems);
+//        listView.setAdapter(adapter);
         return rootView;
     }
 }

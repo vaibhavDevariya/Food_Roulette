@@ -1,40 +1,35 @@
 package com.food.roulette.ui.preferences;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.food.roulette.R;
 import com.food.roulette.ui.tabs.BreakfastFragment;
 import com.food.roulette.ui.tabs.DinnerFragment;
 import com.food.roulette.ui.tabs.LunchFragment;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 public class PreferencesFragment extends Fragment {
-
-    PrefPagerAdapter PrefPagerAdapterObj;
-    JSONObject userPref;
     Bundle bundle;
-//    String[] BreakfastItems = {"Breakfast 1", "Breakfast 2", "Breakfast 3", "Breakfast 4", "Breakfast 5"};
-//    String[] LunchItems = {"Lunch 1", "Lunch 2", "Lunch 3", "Lunch 4", "Lunch 5"};
-//    String[] DinnerItems = {"Dinner 1", "Dinner 2", "Dinner 3", "Dinner 4", "Dinner 5"};
 
     public PreferencesFragment() {
 
@@ -45,105 +40,83 @@ public class PreferencesFragment extends Fragment {
     {
         View view = inflater.inflate(R.layout.pref_frag, container, false);
 
+        PreferencesHandler preferencesHandler = new PreferencesHandler(getContext());
+
         // Initialize the ViewPager and TabLayout
         ViewPager mViewPager = view.findViewById(R.id.viewPager);
         TabLayout mTabLayout = view.findViewById(R.id.tabLayout);
-
-        userPref = getUserPref();
-        bundle = new Bundle();
-        bundle.putStringArray("BreakfastItems", getBreakfastItems() );
-        bundle.putStringArray("LunchItems", getLunchItems() );
-        bundle.putStringArray("DinnerItems", getDinnerItems() );
+        FloatingActionButton fab = view.findViewById(R.id.fab);
 
 
         // Set up the ViewPager with the adapter
-        PrefPagerAdapterObj = new PrefPagerAdapter(getChildFragmentManager());
-        mViewPager.setAdapter(PrefPagerAdapterObj);
-        // Link the TabLayout with the ViewPager
+        mViewPager.setAdapter(new PrefPagerAdapter(getChildFragmentManager()));
         mTabLayout.setupWithViewPager(mViewPager);
+
+
+        bundle = new Bundle();
+        bundle.putStringArrayList("BreakfastItems", preferencesHandler.getBreakfastList() );
+        bundle.putStringArrayList("LunchItems", preferencesHandler.getLunchList() );
+        bundle.putStringArrayList("DinnerItems", preferencesHandler.getDinnerList() );
+
+
+        fab.setOnClickListener(view1 -> {
+            // Create the dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater1 = requireActivity().getLayoutInflater();
+            View dialogView = inflater1.inflate(R.layout.add_dialog, null);
+            builder.setView(dialogView);
+
+            AlertDialog dialog = builder.create();
+
+            Spinner dropdown = dialogView.findViewById(R.id.dropdown);
+            RadioGroup radioGroup = dialogView.findViewById(R.id.radioGroup);
+            EditText editText = dialogView.findViewById(R.id.editText);
+            Button buttonOk = dialogView.findViewById(R.id.buttonOk);
+            Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
+
+//            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+//                    R.array.dropdown_options, android.R.layout.simple_spinner_item);
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            dropdown.setAdapter(adapter);
+//
+//
+//            // Set up the radio group
+//            RadioButton checkbox1 = dialogView.findViewById(R.id.noPrefCheckbox);
+//            RadioButton checkbox2 = dialogView.findViewById(R.id.weekendOnlyCheckbox);
+//            radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+//                if (checkedId == R.id.noPrefCheckbox) {
+//                    checkbox1.setChecked(true);
+//                    checkbox2.setChecked(false);
+//                } else {
+//                    checkbox1.setChecked(false);
+//                    checkbox2.setChecked(true);
+//                }
+//            });
+
+            buttonCancel.setOnClickListener(v -> dialog.dismiss());
+
+            buttonOk.setOnClickListener(v -> {
+                String text = editText.getText().toString();
+
+                String selectedSpinnerItem = dropdown.getSelectedItem().toString();
+                Log.d("hello", "Selected spinner item: " + selectedSpinnerItem);
+
+                int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                String selectedRadioButtonText = ((RadioButton)dialogView.findViewById(selectedRadioButtonId)).getText().toString();
+                Log.d("hello", "Selected radio button text: " + selectedRadioButtonText);
+
+                dialog.dismiss();
+            });
+
+            // Show the dialog
+            dialog.show();
+        });
 
         return view;
     }
 
-    public JSONObject getUserPref()
-    {
-        JSONObject json = null;
-        try{
-            File userJsonFile = new File(getActivity().getExternalFilesDir("userData"), "userFoodList.json");
-            FileInputStream fileInputStream = new FileInputStream(userJsonFile);
-            int size = fileInputStream.available();
-            byte[] buffer = new byte[size];
-            fileInputStream.read(buffer);
-            fileInputStream.close();
-            json = new JSONObject(new String(buffer, StandardCharsets.UTF_8));
-        }
-        catch(IOException | JSONException e)
-        {
-            e.printStackTrace();
-        }
-        return json;
-    }
-
-    public String[] getBreakfastItems() {
-        try {
-            JSONArray breakFastList = userPref.getJSONArray("breakfast");
-            String[] returnList = new String[breakFastList.length()];
-            for (int i = 0; i < breakFastList.length(); i++)
-                returnList[i] = breakFastList.getString(i);
-            return returnList;
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    public String[] getLunchItems() {
-        try {
-
-            JSONObject lunchObj = userPref.getJSONArray("lunch").getJSONObject(0);
-            JSONArray noPrefArray = lunchObj.getJSONArray("noPref");
-            JSONArray weekendArray = lunchObj.getJSONArray("weekend");
-
-            String[] returnList = new String[noPrefArray.length()+weekendArray.length()];
-
-            for (int i = 0; i < returnList.length; i++) {
-                if (i < noPrefArray.length()) {
-                    returnList[i] = noPrefArray.getString(i);
-                } else {
-                    returnList[i] = weekendArray.getString(i - noPrefArray.length());
-                }
-            }
-
-            return returnList;
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    public String[] getDinnerItems() {
-        try {
-            JSONArray dinnerListNoPref = userPref.getJSONArray("dinner").getJSONObject(0).getJSONArray("noPref");
-            JSONArray dinnerListWeekend = userPref.getJSONArray("dinner").getJSONObject(0).getJSONArray("weekend");
-            String[] returnList = new String[dinnerListNoPref.length()+dinnerListWeekend.length()];
-            for (int i = 0; i < dinnerListNoPref.length(); i++)
-                returnList[i] = dinnerListNoPref.getString(i);
-            for (int i = 0; i < dinnerListWeekend.length(); i++)
-                returnList[i+dinnerListNoPref.length()] = dinnerListWeekend.getString(i);
-            return returnList;
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     private class PrefPagerAdapter extends FragmentPagerAdapter
     {
-
         public PrefPagerAdapter(FragmentManager fm) {
             super(fm);
         }

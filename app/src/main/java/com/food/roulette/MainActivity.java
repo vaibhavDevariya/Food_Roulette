@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -20,21 +21,13 @@ import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomNavigationView mBottomNavigationView;
-
-    private FrameLayout mContentFrame;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // Find views
-        mBottomNavigationView = findViewById(R.id.bottom_navigation);
-        mContentFrame = findViewById(R.id.content_frame);
-
-        // Default home view
-        mContentFrame.setVisibility(View.VISIBLE);
+        BottomNavigationView mBottomNavigationView = findViewById(R.id.bottom_navigation);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new HomeFragment())
@@ -54,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.content_frame, new PreferencesFragment())
                             .commit();
-                    // Set up tabs and view pager
-                    //setUpTabs();
                     return true;
             }
             return false;
@@ -88,20 +79,5 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    private void setUpTabs() {
-        // Set up view pager
-//        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
-//        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                mViewPager.setCurrentItem(tab.getPosition(),false);
-//            }
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {}
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {}
-//        });
     }
 }
