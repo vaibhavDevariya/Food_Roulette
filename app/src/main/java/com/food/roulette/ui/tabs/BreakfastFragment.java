@@ -18,10 +18,17 @@ import com.food.roulette.R;
 import com.food.roulette.ui.preferences.PreferencesHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+
 
 public class BreakfastFragment extends Fragment {
+
+    ListViewAdapter adapter;
     public BreakfastFragment() {
-        // Required empty public constructor
+    }
+
+    public interface OnListItemDeletedListener {
+        void onListItemDeleted(int position);
     }
 
     @Nullable
@@ -30,22 +37,16 @@ public class BreakfastFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         ListView listView = rootView.findViewById(R.id.listView);
 
-//        Log.d("preferencesHandler.getBreakfastList()", "onCreateView: "+preferencesHandler.getBreakfastList());
-
         ArrayList<String> listItems = this.getArguments().getStringArrayList("BreakfastItems");
+        Collections.sort(listItems);
 
-        ListViewAdapter adapter = new ListViewAdapter(getContext(), listItems);
+        adapter = new ListViewAdapter(getContext(), listItems);
         listView.setAdapter(adapter);
 
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // Get the selected item position
-//                int itemPosition = position;
-//                // Pass the selected item position to FragmentB or FragmentC
-//            }
-//        });
-
         return rootView;
+    }
+
+    public void refreshListView() {
+        adapter.notifyDataSetChanged();
     }
 }

@@ -21,12 +21,13 @@ import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends AppCompatActivity {
 
+    String userFilePath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Find views
         BottomNavigationView mBottomNavigationView = findViewById(R.id.bottom_navigation);
 
         getSupportFragmentManager().beginTransaction()
@@ -52,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        InitializeUserData();
+        userFilePath = getExternalFilesDir("userData") + File.separator + "userFoodList.json";
+
+        if(!(new File(userFilePath).exists()))
+            InitializeUserData();
         FoodMenuGenerator fmgObj = new FoodMenuGenerator();
     }
 
@@ -69,11 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
             String extStorageState = Environment.getExternalStorageState();
             if (Environment.MEDIA_MOUNTED.equals(extStorageState)) {
-                File userJsonFile = new File(getExternalFilesDir("userData"), "userFoodList.json");
-
+                File userJsonFile = new File(userFilePath);
                 FileOutputStream fileOutputStream = new FileOutputStream(userJsonFile);
                 fileOutputStream.write(DefaultFoodList.getBytes());
 //              Toast.makeText(this, "Created user specific Food list in \n" + userJsonFile, Toast.LENGTH_SHORT).show();
+//                Log.d("TAG", "InitializeUserData: "+ userJsonFile);
                 fileOutputStream.close();
             }
         } catch (IOException ex) {

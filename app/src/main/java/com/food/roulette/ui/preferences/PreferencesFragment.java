@@ -30,6 +30,7 @@ import com.food.roulette.ui.tabs.LunchFragment;
 
 public class PreferencesFragment extends Fragment {
     Bundle bundle;
+    BreakfastFragment breakfastFragment;
 
     public PreferencesFragment() {
 
@@ -42,15 +43,34 @@ public class PreferencesFragment extends Fragment {
 
         PreferencesHandler preferencesHandler = new PreferencesHandler(getContext());
 
-        // Initialize the ViewPager and TabLayout
+        // Initialize the ViewPager, TabLayout and floating add button
         ViewPager mViewPager = view.findViewById(R.id.viewPager);
         TabLayout mTabLayout = view.findViewById(R.id.tabLayout);
         FloatingActionButton fab = view.findViewById(R.id.fab);
 
 
         // Set up the ViewPager with the adapter
-        mViewPager.setAdapter(new PrefPagerAdapter(getChildFragmentManager()));
+        PrefPagerAdapter prefPagerAdapter = new PrefPagerAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(prefPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
+//        // Register a listener to receive deletion events from FragmentA
+//        prefPagerAdapter.setDeletionListener(new ViewPagerAdapter.DeletionListener() {
+//            @Override
+//            public void onItemDeleted() {
+//                // Notify FragmentB and FragmentC that an item has been deleted
+//                Fragment fragmentB = getChildFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":1");
+//                if (fragmentB instanceof FragmentB) {
+//                    ((FragmentB) fragmentB).onItemDeleted();
+//                }
+//
+//                Fragment fragmentC = getChildFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":2");
+//                if (fragmentC instanceof FragmentC) {
+//                    ((FragmentC) fragmentC).onItemDeleted();
+//                }
+//            }
+//        });
+
 
 
         bundle = new Bundle();
@@ -60,7 +80,6 @@ public class PreferencesFragment extends Fragment {
 
 
         fab.setOnClickListener(view1 -> {
-            // Create the dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             LayoutInflater inflater1 = requireActivity().getLayoutInflater();
             View dialogView = inflater1.inflate(R.layout.add_dialog, null);
@@ -74,25 +93,6 @@ public class PreferencesFragment extends Fragment {
             Button buttonOk = dialogView.findViewById(R.id.buttonOk);
             Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
 
-//            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-//                    R.array.dropdown_options, android.R.layout.simple_spinner_item);
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//            dropdown.setAdapter(adapter);
-//
-//
-//            // Set up the radio group
-//            RadioButton checkbox1 = dialogView.findViewById(R.id.noPrefCheckbox);
-//            RadioButton checkbox2 = dialogView.findViewById(R.id.weekendOnlyCheckbox);
-//            radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-//                if (checkedId == R.id.noPrefCheckbox) {
-//                    checkbox1.setChecked(true);
-//                    checkbox2.setChecked(false);
-//                } else {
-//                    checkbox1.setChecked(false);
-//                    checkbox2.setChecked(true);
-//                }
-//            });
-
             buttonCancel.setOnClickListener(v -> dialog.dismiss());
 
             buttonOk.setOnClickListener(v -> {
@@ -105,10 +105,10 @@ public class PreferencesFragment extends Fragment {
                 String selectedRadioButtonText = ((RadioButton)dialogView.findViewById(selectedRadioButtonId)).getText().toString();
                 Log.d("hello", "Selected radio button text: " + selectedRadioButtonText);
 
+                preferencesHandler.addItem(text,selectedSpinnerItem.toLowerCase(),selectedRadioButtonText.toLowerCase());
                 dialog.dismiss();
             });
 
-            // Show the dialog
             dialog.show();
         });
 
@@ -125,7 +125,7 @@ public class PreferencesFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    BreakfastFragment breakfastFragment = new BreakfastFragment();
+                    breakfastFragment = new BreakfastFragment();
                     breakfastFragment.setArguments(bundle);
                     return breakfastFragment;
                 case 1:
@@ -159,6 +159,14 @@ public class PreferencesFragment extends Fragment {
         public int getCount() {
             return 3;
         }
+
+//        public void setDeletionListener(DeletionListener listener) {
+//            this.deletionListener = listener;
+//        }
+//
+//        public interface DeletionListener {
+//            void onItemDeleted();
+//        }
 
     }
 }

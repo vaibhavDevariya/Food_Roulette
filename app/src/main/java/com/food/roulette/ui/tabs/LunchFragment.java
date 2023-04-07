@@ -15,10 +15,10 @@ import com.food.roulette.R;
 import com.food.roulette.ui.preferences.PreferencesHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class LunchFragment extends Fragment {
     public LunchFragment() {
-        // Required empty public constructor
     }
 
     @Nullable
@@ -28,16 +28,11 @@ public class LunchFragment extends Fragment {
         ListView listView = rootView.findViewById(R.id.listView);
 
         ArrayList<String> listItems = this.getArguments().getStringArrayList("LunchItems");
+        Collections.sort(listItems);
 
         ListViewAdapter adapter = new ListViewAdapter(getContext(), listItems);
         listView.setAdapter(adapter);
 
-
-//        String[] listItems = this.getArguments().getStringArray("LunchItems");
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-//                android.R.layout.simple_list_item_1, listItems);
-//        listView.setAdapter(adapter);
         return rootView;
     }
 }
