@@ -15,6 +15,7 @@ import java.util.List;
 public class ListViewAdapter extends BaseAdapter {
     private List<String> items;
     private Context context;
+    private OnDeleteClickListener onDeleteClickListener;
 
     public ListViewAdapter(Context context, List<String> items) {
         this.context = context;
@@ -54,17 +55,27 @@ public class ListViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-
         String item = items.get(position);
         viewHolder.textView.setText(item);
         viewHolder.deleteButton.setTag(position);
         viewHolder.deleteButton.setOnClickListener(v -> {
             int position1 = (Integer) v.getTag();
+            if (onDeleteClickListener != null) {
+                onDeleteClickListener.onDeleteClick(position1);
+            }
             items.remove(position1);
             notifyDataSetChanged();
         });
 
         return view;
+    }
+
+    public interface OnDeleteClickListener {
+        void onDeleteClick(int itemPosition);
+    }
+
+    public void setOnDeleteClickListener(OnDeleteClickListener listener) {
+        onDeleteClickListener = listener;
     }
 
     static class ViewHolder {

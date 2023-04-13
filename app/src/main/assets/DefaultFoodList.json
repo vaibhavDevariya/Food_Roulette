@@ -1,8 +1,8 @@
 {
-  "breakfast": ["Bhakri","Plain paratha","Poha","Puri","Roti"],
+  "breakfast": ["Plain paratha","Poha","Puri","Roti"],
   "lunch": [
     {
-      "no pref": ["Drumstick", "Okra", "Aloo Matar"],
+      "no pref": ["Aloo Matar","Drumstick", "Okra" ],
       "weekend": ["Samosa", "Dabeli"]
     }
   ],

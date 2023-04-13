@@ -17,7 +17,11 @@ import com.food.roulette.ui.preferences.PreferencesHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class LunchFragment extends Fragment {
+public class LunchFragment extends Fragment implements ListViewAdapter.OnDeleteClickListener{
+
+    ArrayList<String> listItems;
+    ListViewAdapter adapter;
+
     public LunchFragment() {
     }
 
@@ -27,12 +31,25 @@ public class LunchFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         ListView listView = rootView.findViewById(R.id.listView);
 
-        ArrayList<String> listItems = this.getArguments().getStringArrayList("LunchItems");
-        Collections.sort(listItems);
+        listItems = this.getArguments().getStringArrayList("LunchItems");
+//        Collections.sort(listItems);
 
-        ListViewAdapter adapter = new ListViewAdapter(getContext(), listItems);
+        adapter = new ListViewAdapter(getContext(), listItems);
+        adapter.setOnDeleteClickListener(this);
         listView.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onDeleteClick(int itemPosition) {
+//        list.remove(position);
+//        adapter.notifyDataSetChanged();
+        new PreferencesHandler().deleteItem("lunch",itemPosition,listItems.get(itemPosition));
+    }
+
+    public void onItemAdded()
+    {
+        adapter.notifyDataSetChanged();
     }
 }

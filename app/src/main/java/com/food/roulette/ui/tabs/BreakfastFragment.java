@@ -21,14 +21,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class BreakfastFragment extends Fragment {
+public class BreakfastFragment extends Fragment implements ListViewAdapter.OnDeleteClickListener{
 
     ListViewAdapter adapter;
+    ArrayList<String> listItems;
     public BreakfastFragment() {
-    }
-
-    public interface OnListItemDeletedListener {
-        void onListItemDeleted(int position);
     }
 
     @Nullable
@@ -37,16 +34,26 @@ public class BreakfastFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         ListView listView = rootView.findViewById(R.id.listView);
 
-        ArrayList<String> listItems = this.getArguments().getStringArrayList("BreakfastItems");
-        Collections.sort(listItems);
+        listItems = this.getArguments().getStringArrayList("BreakfastItems");
+//        Collections.sort(listItems);
 
         adapter = new ListViewAdapter(getContext(), listItems);
+        adapter.setOnDeleteClickListener(this);
         listView.setAdapter(adapter);
 
         return rootView;
     }
 
-    public void refreshListView() {
+    @Override
+    public void onDeleteClick(int itemPosition) {
+//        list.remove(position);
+//        adapter.notifyDataSetChanged();
+        new PreferencesHandler().deleteItem("breakfast",itemPosition,listItems.get(itemPosition));
+    }
+
+    public void onItemAdded()
+    {
+        Log.d("TAG", "onItemAdded: test");
         adapter.notifyDataSetChanged();
     }
 }

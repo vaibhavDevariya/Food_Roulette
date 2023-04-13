@@ -30,7 +30,7 @@ import com.food.roulette.ui.tabs.LunchFragment;
 
 public class PreferencesFragment extends Fragment {
     Bundle bundle;
-    BreakfastFragment breakfastFragment;
+
 
     public PreferencesFragment() {
 
@@ -53,24 +53,6 @@ public class PreferencesFragment extends Fragment {
         PrefPagerAdapter prefPagerAdapter = new PrefPagerAdapter(getChildFragmentManager());
         mViewPager.setAdapter(prefPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-
-//        // Register a listener to receive deletion events from FragmentA
-//        prefPagerAdapter.setDeletionListener(new ViewPagerAdapter.DeletionListener() {
-//            @Override
-//            public void onItemDeleted() {
-//                // Notify FragmentB and FragmentC that an item has been deleted
-//                Fragment fragmentB = getChildFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":1");
-//                if (fragmentB instanceof FragmentB) {
-//                    ((FragmentB) fragmentB).onItemDeleted();
-//                }
-//
-//                Fragment fragmentC = getChildFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewPager + ":2");
-//                if (fragmentC instanceof FragmentC) {
-//                    ((FragmentC) fragmentC).onItemDeleted();
-//                }
-//            }
-//        });
-
 
 
         bundle = new Bundle();
@@ -96,17 +78,15 @@ public class PreferencesFragment extends Fragment {
             buttonCancel.setOnClickListener(v -> dialog.dismiss());
 
             buttonOk.setOnClickListener(v -> {
-                String text = editText.getText().toString();
+                String foodItem = editText.getText().toString();
+                String foodTime = dropdown.getSelectedItem().toString().toLowerCase();
+                String pref = ((RadioButton)dialogView.findViewById(radioGroup.getCheckedRadioButtonId())).
+                        getText().toString().toLowerCase();
 
-                String selectedSpinnerItem = dropdown.getSelectedItem().toString();
-                Log.d("hello", "Selected spinner item: " + selectedSpinnerItem);
-
-                int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-                String selectedRadioButtonText = ((RadioButton)dialogView.findViewById(selectedRadioButtonId)).getText().toString();
-                Log.d("hello", "Selected radio button text: " + selectedRadioButtonText);
-
-                preferencesHandler.addItem(text,selectedSpinnerItem.toLowerCase(),selectedRadioButtonText.toLowerCase());
-                dialog.dismiss();
+                if(!foodItem.isEmpty() && !foodTime.isEmpty()) {
+                    preferencesHandler.addItem(foodItem, foodTime, pref);
+                    dialog.dismiss();
+                }
             });
 
             dialog.show();
@@ -125,7 +105,7 @@ public class PreferencesFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    breakfastFragment = new BreakfastFragment();
+                    BreakfastFragment breakfastFragment = new BreakfastFragment();
                     breakfastFragment.setArguments(bundle);
                     return breakfastFragment;
                 case 1:

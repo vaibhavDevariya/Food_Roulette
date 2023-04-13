@@ -1,6 +1,7 @@
 package com.food.roulette.ui.preferences;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,11 +18,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PreferencesHandler {
 
-    private JSONObject userPref;
-    private String userPrefFile;
+    private static JSONObject userPref;
+    private static String userPrefFile;
 
     public PreferencesHandler()
     {
@@ -122,6 +124,38 @@ public class PreferencesHandler {
             else
             {
                 arr.getJSONObject(0).getJSONArray(pref).put(foodItem);
+            }
+            userPref.put(time, arr);
+            updateList();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteItem(String time, int deletedItemIdx, String item)
+    {
+        try {
+            JSONArray arr = userPref.getJSONArray(time);
+            if (time.equalsIgnoreCase("breakfast")) {
+                arr.remove(deletedItemIdx);
+            }
+            else
+            {
+                JSONArray noPrefArr = arr.getJSONObject(0).getJSONArray("no pref");
+                JSONArray weekendArr = arr.getJSONObject(0).getJSONArray("weekend");
+
+                if(noPrefArr.length() > deletedItemIdx && Objects.equals(item, noPrefArr.getString(deletedItemIdx))) {
+                    noPrefArr.remove(deletedItemIdx);
+                    arr.getJSONObject(0).put("no pref",noPrefArr);
+                }
+
+                else if(((weekendArr.length()+noPrefArr.length()) > deletedItemIdx) &&
+                        Objects.equals(item, weekendArr.getString(deletedItemIdx-noPrefArr.length()))) {
+                    weekendArr.remove(deletedItemIdx-noPrefArr.length());
+                    arr.getJSONObject(0).put("weekend",weekendArr);
+                }
             }
             userPref.put(time, arr);
             updateList();
