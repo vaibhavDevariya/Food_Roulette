@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,23 +20,19 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_frag, container, false);
 
-//        // Access the text fields by their IDs
-//        EditText editText1 = view.findViewById(R.id.editText1);
-//        EditText editText2 = view.findViewById(R.id.editText2);
-//        EditText editText3 = view.findViewById(R.id.editText3);
+        Button button = view.findViewById(R.id.generateButton);
+        button.setOnClickListener(v -> {
+            TextView breakfastText = view.findViewById(R.id.breakfastText);
+            TextView lunchText = view.findViewById(R.id.lunchText);
+            TextView dinnerText = view.findViewById(R.id.dinnerText);
 
-        // Set an OnClickListener for the button
-        Button button = view.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            FoodMenuGenerator foodMenuGenerator = new FoodMenuGenerator();
 
-                String breakfast = view.findViewById(R.id.breakfastText).toString();
-                String lunch = view.findViewById(R.id.lunchText).toString();
-                String dinner = view.findViewById(R.id.dinnerText).toString();
-            }
+            breakfastText.setText("Breakfast : " + foodMenuGenerator.getBreakfast());
+            lunchText.setText("Lunch : " + foodMenuGenerator.getLunch());
+            dinnerText.setText("Dinner : " + foodMenuGenerator.getDinner());
+
         });
-
         return view;
     }
 }

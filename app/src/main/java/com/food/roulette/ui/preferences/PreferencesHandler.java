@@ -25,12 +25,18 @@ public class PreferencesHandler {
     private static JSONObject userPref;
     private static String userPrefFile;
 
+    private static ArrayList<String> BreakfastList= new ArrayList<>();
+    private static ArrayList<String> LunchList= new ArrayList<>();
+    private static ArrayList<String> DinnerList= new ArrayList<>();
+
     public PreferencesHandler()
     {
+
     }
-    public PreferencesHandler(Context context)
+
+    public static void InitUserPref(String userFoodlistPath)
     {
-        userPrefFile = context.getExternalFilesDir("userData") + File.separator + "userFoodList.json";
+        userPrefFile = userFoodlistPath;
         try{
             File userJsonFile = new File(userPrefFile);
             FileInputStream fileInputStream = new FileInputStream(userJsonFile);
@@ -44,74 +50,79 @@ public class PreferencesHandler {
         {
             e.printStackTrace();
         }
+
+        InitBreakfastList();
+        InitLunchList();
+        InitDinnerList();
     }
 
-    public JSONObject getUserPref(Context context)
+    public static JSONObject getUserPref()
     {
         return userPref;
     }
 
-    public ArrayList<String> getBreakfastList() {
+    public static void InitBreakfastList()
+    {
         try {
             JSONArray breakFastList = userPref.getJSONArray("breakfast");
 
-            ArrayList<String>  returnList = new ArrayList<>();
-
             for (int i = 0; i < breakFastList.length(); i++) {
-                returnList.add(breakFastList.getString(i));
+                BreakfastList.add(breakFastList.getString(i));
             }
-            return returnList;
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            return null;
         }
     }
-    public ArrayList<String>  getLunchList() {
+
+    public static void InitLunchList()
+    {
         try {
 
             JSONObject lunchObj = userPref.getJSONArray("lunch").getJSONObject(0);
             JSONArray noPrefArray = lunchObj.getJSONArray("no pref");
             JSONArray weekendArray = lunchObj.getJSONArray("weekend");
 
-            ArrayList<String>  returnList = new ArrayList<>();
-
             for (int i = 0; i < noPrefArray.length(); i++)
-                returnList.add(noPrefArray.getString(i));
+                LunchList.add(noPrefArray.getString(i));
 
             for (int i = 0; i < weekendArray.length(); i++)
-                returnList.add(weekendArray.getString(i));
-
-            return returnList;
+                LunchList.add(weekendArray.getString(i));
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            return null;
         }
     }
-    public ArrayList<String>  getDinnerList() {
+
+    public static void InitDinnerList()
+    {
         try {
             JSONObject dinnerObj = userPref.getJSONArray("dinner").getJSONObject(0);
             JSONArray noPrefArray = dinnerObj.getJSONArray("no pref");
             JSONArray weekendArray = dinnerObj.getJSONArray("weekend");
 
-            ArrayList<String>  returnList = new ArrayList<>();
-
             for (int i = 0; i < noPrefArray.length(); i++)
-                returnList.add(noPrefArray.getString(i));
+                DinnerList.add(noPrefArray.getString(i));
 
             for (int i = 0; i < weekendArray.length(); i++)
-                returnList.add(weekendArray.getString(i));
-
-            return returnList;
+                DinnerList.add(weekendArray.getString(i));
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            return null;
         }
+    }
+
+    public ArrayList<String> getBreakfastList() {
+        return BreakfastList;
+    }
+    public ArrayList<String>  getLunchList() {
+        return LunchList;
+    }
+    public ArrayList<String>  getDinnerList() {
+        return DinnerList;
     }
 
     public void addItem(String foodItem, String time, String pref)
@@ -126,7 +137,7 @@ public class PreferencesHandler {
                 arr.getJSONObject(0).getJSONArray(pref).put(foodItem);
             }
             userPref.put(time, arr);
-            updateList();
+            updateDB();
         }
         catch(Exception e)
         {
@@ -158,7 +169,7 @@ public class PreferencesHandler {
                 }
             }
             userPref.put(time, arr);
-            updateList();
+            updateDB();
         }
         catch(Exception e)
         {
@@ -166,7 +177,7 @@ public class PreferencesHandler {
         }
     }
 
-    public void updateList()
+    public void updateDB()
     {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();

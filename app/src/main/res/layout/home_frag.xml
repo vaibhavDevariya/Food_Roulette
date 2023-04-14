@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +16,7 @@
             android:id="@+id/home_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:text="@string/tomorrow_menu"
             android:textStyle="bold"/>
 
@@ -22,6 +24,7 @@
             android:id="@+id/breakfastText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="@string/breakfast"
             android:textStyle="bold"/>
 
@@ -29,6 +32,7 @@
             android:id="@+id/lunchText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="@string/lunch"
             android:textStyle="bold"/>
 
@@ -46,7 +50,7 @@
         android:orientation="vertical"
         android:gravity="center">
         <Button
-            android:id="@+id/button"
+            android:id="@+id/generateButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="bottom|end"

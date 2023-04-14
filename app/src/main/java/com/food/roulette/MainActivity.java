@@ -4,12 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
 
+import com.food.roulette.ui.preferences.PreferencesHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.food.roulette.ui.CoreEngine.FoodMenuGenerator;
+import com.food.roulette.ui.home.FoodMenuGenerator;
 import com.food.roulette.ui.home.HomeFragment;
 import com.food.roulette.ui.preferences.PreferencesFragment;
 
@@ -57,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(!(new File(userFilePath).exists()))
             InitializeUserData();
-        FoodMenuGenerator fmgObj = new FoodMenuGenerator();
+
+        PreferencesHandler.InitUserPref(userFilePath);
     }
 
     public void InitializeUserData() {
@@ -76,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 File userJsonFile = new File(userFilePath);
                 FileOutputStream fileOutputStream = new FileOutputStream(userJsonFile);
                 fileOutputStream.write(DefaultFoodList.getBytes());
-//              Toast.makeText(this, "Created user specific Food list in \n" + userJsonFile, Toast.LENGTH_SHORT).show();
-//                Log.d("TAG", "InitializeUserData: "+ userJsonFile);
                 fileOutputStream.close();
             }
         } catch (IOException ex) {

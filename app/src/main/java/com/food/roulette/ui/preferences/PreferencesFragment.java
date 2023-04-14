@@ -41,7 +41,7 @@ public class PreferencesFragment extends Fragment {
     {
         View view = inflater.inflate(R.layout.pref_frag, container, false);
 
-        PreferencesHandler preferencesHandler = new PreferencesHandler(getContext());
+        PreferencesHandler preferencesHandler = new PreferencesHandler();
 
         // Initialize the ViewPager, TabLayout and floating add button
         ViewPager mViewPager = view.findViewById(R.id.viewPager);
