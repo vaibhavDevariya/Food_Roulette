@@ -19,14 +19,14 @@ public class FoodMenuGenerator {
         preferencesHandler = new PreferencesHandler();
     }
 
-    public boolean isWeekend()
-    {
-        Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-
-        if(dayOfWeek == Day.SATURDAY || )
-        return true;
-    }
+//    public boolean isWeekend()
+//    {
+//        Calendar calendar = Calendar.getInstance();
+//        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+//
+//        if(dayOfWeek == Day.SATURDAY || )
+//        return true;
+//    }
 
     public String getBreakfast()
     {
