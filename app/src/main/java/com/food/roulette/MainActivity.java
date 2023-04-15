@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 
 import com.food.roulette.ui.preferences.PreferencesHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -28,6 +29,13 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView mBottomNavigationView = findViewById(R.id.bottom_navigation);
 
+        userFilePath = getExternalFilesDir("userData") + File.separator + "userFoodList.json";
+
+        if(!(new File(userFilePath).exists()))
+            InitializeUserData();
+
+        PreferencesHandler.InitUserPref(userFilePath);
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new HomeFragment())
                 .commit();
@@ -36,13 +44,11 @@ public class MainActivity extends AppCompatActivity {
         mBottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    // Show content for Home tab
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.content_frame, new HomeFragment())
                             .commit();
                     return true;
                 case R.id.navigation_preferences:
-                    // Show tabs for Preferences
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.content_frame, new PreferencesFragment())
                             .commit();
@@ -50,13 +56,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-
-        userFilePath = getExternalFilesDir("userData") + File.separator + "userFoodList.json";
-
-        if(!(new File(userFilePath).exists()))
-            InitializeUserData();
-
-        PreferencesHandler.InitUserPref(userFilePath);
     }
 
     public void InitializeUserData() {

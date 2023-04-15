@@ -3,6 +3,7 @@ package com.food.roulette.ui.preferences;
 import android.content.Context;
 import android.util.Log;
 
+import com.food.roulette.ui.tabs.DinnerFragment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -18,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 public class PreferencesHandler {
@@ -29,9 +31,17 @@ public class PreferencesHandler {
     private static ArrayList<String> LunchList= new ArrayList<>();
     private static ArrayList<String> DinnerList= new ArrayList<>();
 
-    public PreferencesHandler()
-    {
+    private static PreferencesHandler instance=null;
 
+    private PreferencesHandler()
+    {
+    }
+
+    public static PreferencesHandler getInstance()
+    {
+        if(instance == null)
+            instance = new PreferencesHandler();
+        return instance;
     }
 
     public static void InitUserPref(String userFoodlistPath)
@@ -63,12 +73,12 @@ public class PreferencesHandler {
 
     public static void InitBreakfastList()
     {
+        BreakfastList.clear();
         try {
             JSONArray breakFastList = userPref.getJSONArray("breakfast");
 
-            for (int i = 0; i < breakFastList.length(); i++) {
+            for (int i = 0; i < breakFastList.length(); i++)
                 BreakfastList.add(breakFastList.getString(i));
-            }
         }
         catch(Exception e)
         {
@@ -78,17 +88,13 @@ public class PreferencesHandler {
 
     public static void InitLunchList()
     {
-        try {
+        LunchList.clear();
+        try
+        {
+            JSONArray lunchList = userPref.getJSONArray("lunch");
 
-            JSONObject lunchObj = userPref.getJSONArray("lunch").getJSONObject(0);
-            JSONArray noPrefArray = lunchObj.getJSONArray("no pref");
-            JSONArray weekendArray = lunchObj.getJSONArray("weekend");
-
-            for (int i = 0; i < noPrefArray.length(); i++)
-                LunchList.add(noPrefArray.getString(i));
-
-            for (int i = 0; i < weekendArray.length(); i++)
-                LunchList.add(weekendArray.getString(i));
+            for (int i = 0; i < lunchList.length(); i++)
+                LunchList.add(lunchList.getString(i));
         }
         catch(Exception e)
         {
@@ -98,16 +104,12 @@ public class PreferencesHandler {
 
     public static void InitDinnerList()
     {
+        DinnerList.clear();
         try {
-            JSONObject dinnerObj = userPref.getJSONArray("dinner").getJSONObject(0);
-            JSONArray noPrefArray = dinnerObj.getJSONArray("no pref");
-            JSONArray weekendArray = dinnerObj.getJSONArray("weekend");
+            JSONArray dinnerList = userPref.getJSONArray("dinner");
 
-            for (int i = 0; i < noPrefArray.length(); i++)
-                DinnerList.add(noPrefArray.getString(i));
-
-            for (int i = 0; i < weekendArray.length(); i++)
-                DinnerList.add(weekendArray.getString(i));
+            for (int i = 0; i < dinnerList.length(); i++)
+                DinnerList.add(dinnerList.getString(i));
         }
         catch(Exception e)
         {
@@ -125,18 +127,30 @@ public class PreferencesHandler {
         return DinnerList;
     }
 
+    private void sortedAdd(ArrayList<String> list, String item)
+    {
+        list.add(item);
+        Collections.sort(list);
+    }
+
+    private ArrayList<String> getList(String time)
+    {
+        if (time.equalsIgnoreCase("Breakfast"))
+            return BreakfastList;
+        else if(time.equalsIgnoreCase("Lunch"))
+            return LunchList;
+        else if(time.equalsIgnoreCase("Dinner"))
+            return DinnerList;
+        return null;
+    }
+
     public void addItem(String foodItem, String time, String pref)
     {
         try {
-            JSONArray arr = userPref.getJSONArray(time);
-            if (time.equalsIgnoreCase("breakfast")) {
-                arr.put(foodItem);
-            }
-            else
-            {
-                arr.getJSONObject(0).getJSONArray(pref).put(foodItem);
-            }
-            userPref.put(time, arr);
+            if(pref.equalsIgnoreCase("weekend")) foodItem+="_w";
+
+            sortedAdd(getList(time), foodItem);
+            userPref.put(time, new JSONArray(getList(time)));
             updateDB();
         }
         catch(Exception e)
@@ -145,29 +159,11 @@ public class PreferencesHandler {
         }
     }
 
-    public void deleteItem(String time, int deletedItemIdx, String item)
+    public void deleteItem(String time, int deletedItemIdx)
     {
         try {
             JSONArray arr = userPref.getJSONArray(time);
-            if (time.equalsIgnoreCase("breakfast")) {
-                arr.remove(deletedItemIdx);
-            }
-            else
-            {
-                JSONArray noPrefArr = arr.getJSONObject(0).getJSONArray("no pref");
-                JSONArray weekendArr = arr.getJSONObject(0).getJSONArray("weekend");
-
-                if(noPrefArr.length() > deletedItemIdx && Objects.equals(item, noPrefArr.getString(deletedItemIdx))) {
-                    noPrefArr.remove(deletedItemIdx);
-                    arr.getJSONObject(0).put("no pref",noPrefArr);
-                }
-
-                else if(((weekendArr.length()+noPrefArr.length()) > deletedItemIdx) &&
-                        Objects.equals(item, weekendArr.getString(deletedItemIdx-noPrefArr.length()))) {
-                    weekendArr.remove(deletedItemIdx-noPrefArr.length());
-                    arr.getJSONObject(0).put("weekend",weekendArr);
-                }
-            }
+            arr.remove(deletedItemIdx);
             userPref.put(time, arr);
             updateDB();
         }
@@ -186,6 +182,9 @@ public class PreferencesHandler {
             FileWriter file = new FileWriter(userPrefFile);
             file.write(gson.toJson(je));
             file.close();
+//            InitBreakfastList();
+//            InitLunchList();
+//            InitDinnerList();
         }
         catch(Exception e)
         {

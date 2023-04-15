@@ -1,6 +1,7 @@
 package com.food.roulette.ui.tabs;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class ListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         View view = convertView;
         ViewHolder viewHolder;
 
@@ -55,7 +57,7 @@ public class ListViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        String item = items.get(position);
+        String item = items.get(position).replace("_w","");
         viewHolder.textView.setText(item);
         viewHolder.deleteButton.setTag(position);
         viewHolder.deleteButton.setOnClickListener(v -> {
@@ -70,7 +72,12 @@ public class ListViewAdapter extends BaseAdapter {
         return view;
     }
 
+    public void addItem() {
+        notifyDataSetChanged();
+    }
+
     public interface OnDeleteClickListener {
+
         void onDeleteClick(int itemPosition);
     }
 

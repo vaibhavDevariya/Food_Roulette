@@ -1,6 +1,7 @@
 package com.food.roulette.ui.tabs;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class DinnerFragment extends Fragment implements ListViewAdapter.OnDeleteClickListener{
-
-    ArrayList<String> listItems;
-    ListViewAdapter adapter;
+    public static ListViewAdapter adapter;
 
     public DinnerFragment() {
     }
@@ -31,8 +30,7 @@ public class DinnerFragment extends Fragment implements ListViewAdapter.OnDelete
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         ListView listView = rootView.findViewById(R.id.listView);
 
-        listItems = this.getArguments().getStringArrayList("DinnerItems");
-//        Collections.sort(listItems);
+        ArrayList<String> listItems = PreferencesHandler.getInstance().getDinnerList();
 
         adapter = new ListViewAdapter(getContext(), listItems);
         adapter.setOnDeleteClickListener(this);
@@ -43,13 +41,6 @@ public class DinnerFragment extends Fragment implements ListViewAdapter.OnDelete
 
     @Override
     public void onDeleteClick(int itemPosition) {
-//        list.remove(position);
-//        adapter.notifyDataSetChanged();
-        new PreferencesHandler().deleteItem("dinner",itemPosition,listItems.get(itemPosition));
-    }
-
-    public void onItemAdded()
-    {
-        adapter.notifyDataSetChanged();
+        PreferencesHandler.getInstance().deleteItem("dinner",itemPosition);
     }
 }

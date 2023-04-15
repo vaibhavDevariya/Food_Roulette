@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.food.roulette.ui.tabs.ListViewAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.food.roulette.R;
@@ -28,9 +29,9 @@ import com.food.roulette.ui.tabs.BreakfastFragment;
 import com.food.roulette.ui.tabs.DinnerFragment;
 import com.food.roulette.ui.tabs.LunchFragment;
 
-public class PreferencesFragment extends Fragment {
-    Bundle bundle;
+import java.util.ArrayList;
 
+public class PreferencesFragment extends Fragment {
 
     public PreferencesFragment() {
 
@@ -41,12 +42,10 @@ public class PreferencesFragment extends Fragment {
     {
         View view = inflater.inflate(R.layout.pref_frag, container, false);
 
-        PreferencesHandler preferencesHandler = new PreferencesHandler();
-
         // Initialize the ViewPager, TabLayout and floating add button
         ViewPager mViewPager = view.findViewById(R.id.viewPager);
         TabLayout mTabLayout = view.findViewById(R.id.tabLayout);
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        FloatingActionButton addButton = view.findViewById(R.id.addButton);
 
 
         // Set up the ViewPager with the adapter
@@ -55,13 +54,7 @@ public class PreferencesFragment extends Fragment {
         mTabLayout.setupWithViewPager(mViewPager);
 
 
-        bundle = new Bundle();
-        bundle.putStringArrayList("BreakfastItems", preferencesHandler.getBreakfastList() );
-        bundle.putStringArrayList("LunchItems", preferencesHandler.getLunchList() );
-        bundle.putStringArrayList("DinnerItems", preferencesHandler.getDinnerList() );
-
-
-        fab.setOnClickListener(view1 -> {
+        addButton.setOnClickListener(view1 -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             LayoutInflater inflater1 = requireActivity().getLayoutInflater();
             View dialogView = inflater1.inflate(R.layout.add_dialog, null);
@@ -83,8 +76,17 @@ public class PreferencesFragment extends Fragment {
                 String pref = ((RadioButton)dialogView.findViewById(radioGroup.getCheckedRadioButtonId())).
                         getText().toString().toLowerCase();
 
-                if(!foodItem.isEmpty() && !foodTime.isEmpty()) {
-                    preferencesHandler.addItem(foodItem, foodTime, pref);
+                if(!foodItem.isEmpty() && !foodTime.isEmpty())
+                {
+                    PreferencesHandler.getInstance().addItem(foodItem, foodTime, pref);
+
+                    if(foodTime.equalsIgnoreCase("Breakfast"))
+                        BreakfastFragment.adapter.addItem();
+                    else if(foodTime.equalsIgnoreCase("Lunch"))
+                        LunchFragment.adapter.addItem();
+                    else if(foodTime.equalsIgnoreCase("Dinner"))
+                        DinnerFragment.adapter.addItem();
+
                     dialog.dismiss();
                 }
             });
@@ -105,17 +107,11 @@ public class PreferencesFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    BreakfastFragment breakfastFragment = new BreakfastFragment();
-                    breakfastFragment.setArguments(bundle);
-                    return breakfastFragment;
+                    return new BreakfastFragment();
                 case 1:
-                    LunchFragment lunchFragment = new LunchFragment();
-                    lunchFragment.setArguments(bundle);
-                    return lunchFragment;
+                    return new LunchFragment();
                 case 2:
-                    DinnerFragment dinnerFragment = new DinnerFragment();
-                    dinnerFragment.setArguments(bundle);
-                    return dinnerFragment;
+                    return new DinnerFragment();
                 default:
                     return null;
             }
@@ -139,14 +135,6 @@ public class PreferencesFragment extends Fragment {
         public int getCount() {
             return 3;
         }
-
-//        public void setDeletionListener(DeletionListener listener) {
-//            this.deletionListener = listener;
-//        }
-//
-//        public interface DeletionListener {
-//            void onItemDeleted();
-//        }
 
     }
 }

@@ -1,15 +1,28 @@
 {
-  "breakfast": ["Plain paratha","Poha","Puri","Roti"],
+  "breakfast": [
+    "Bread Butter",
+    "Masala Puri",
+    "Plain Paratha",
+    "Poha",
+    "Roti",
+    "Sprouts"
+  ],
   "lunch": [
-    {
-      "no pref": ["Aloo Matar","Drumstick", "Okra" ],
-      "weekend": ["Samosa", "Dabeli"]
-    }
+    "Aloo Matar",
+    "Bengan Bharta",
+    "Bhindi",
+    "Chole Bhature",
+    "Dabeli_w",
+    "Drumstick",
+    "Samosa_w",
+    "Sev Tomato"
   ],
   "dinner": [
-    {
-      "no pref": ["Kadhi pakoda","Rajma chawal"],
-      "weekend": ["Dabeli"]
-    }
+    "Dabeli_w",
+    "Dal fry Jeera rice",
+    "Kadhi Pakoda",
+    "Khichdi",
+    "Moong Chawal",
+    "Rajma Chawal"
   ]
 }
