@@ -30,7 +30,7 @@ public class DinnerFragment extends Fragment implements ListViewAdapter.OnDelete
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         ListView listView = rootView.findViewById(R.id.listView);
 
-        ArrayList<String> listItems = PreferencesHandler.getInstance().getDinnerList();
+        ArrayList<String> listItems = PreferencesHandler.getInstance().getFullList(PreferencesHandler.TIME.DINNER.toString());
 
         adapter = new ListViewAdapter(getContext(), listItems);
         adapter.setOnDeleteClickListener(this);

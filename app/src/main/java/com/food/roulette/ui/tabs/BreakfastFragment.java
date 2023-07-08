@@ -33,7 +33,7 @@ public class BreakfastFragment extends Fragment implements ListViewAdapter.OnDel
         View rootView = inflater.inflate(R.layout.list_view, container, false);
         ListView listView = rootView.findViewById(R.id.listView);
 
-        ArrayList<String> listItems = PreferencesHandler.getInstance().getBreakfastList();
+        ArrayList<String> listItems = PreferencesHandler.getInstance().getFullList(PreferencesHandler.TIME.BREAKFAST.toString());
 
         adapter = new ListViewAdapter(getContext(), listItems);
         adapter.setOnDeleteClickListener(this);

@@ -17,10 +17,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class PreferencesHandler {
 
@@ -30,6 +32,18 @@ public class PreferencesHandler {
     private static ArrayList<String> BreakfastList= new ArrayList<>();
     private static ArrayList<String> LunchList= new ArrayList<>();
     private static ArrayList<String> DinnerList= new ArrayList<>();
+
+    public enum TIME {
+        BREAKFAST,
+        LUNCH,
+        DINNER
+    }
+
+    public enum DAY {
+        WEEKDAY,
+        WEEKEND,
+        ALL
+    }
 
     private static PreferencesHandler instance=null;
 
@@ -117,23 +131,33 @@ public class PreferencesHandler {
         }
     }
 
-    public ArrayList<String> getBreakfastList() {
-        return BreakfastList;
-    }
-    public ArrayList<String>  getLunchList() {
-        return LunchList;
-    }
-    public ArrayList<String>  getDinnerList() {
-        return DinnerList;
+//    public ArrayList<String> getBreakfastList() {
+//        return BreakfastList;
+//    }
+//    public ArrayList<String> getLunchList() {
+//        return LunchList;
+//    }
+//    public ArrayList<String> getDinnerList() {
+//        return DinnerList;
+//    }
+
+    public ArrayList<String> getListFOR(TIME t, DAY d) {
+
+        ArrayList<String> foodList = getFullList(t.toString());
+
+        if(d == DAY.WEEKDAY) {
+            foodList = foodList.stream()
+            .filter(item -> !item.endsWith("_w")).collect(Collectors.toCollection(ArrayList::new));
+        }
+        else if(d == DAY.WEEKEND) {
+            foodList = foodList.stream()
+            .filter(item -> item.endsWith("_w")).collect(Collectors.toCollection(ArrayList::new));
+        }
+
+        return foodList;
     }
 
-    private void sortedAdd(ArrayList<String> list, String item)
-    {
-        list.add(item);
-        Collections.sort(list);
-    }
-
-    private ArrayList<String> getList(String time)
+    public ArrayList<String> getFullList(String time)
     {
         if (time.equalsIgnoreCase("Breakfast"))
             return BreakfastList;
@@ -144,13 +168,19 @@ public class PreferencesHandler {
         return null;
     }
 
+    private void sortedAdd(ArrayList<String> list, String item)
+    {
+        list.add(item);
+        Collections.sort(list);
+    }
+
     public void addItem(String foodItem, String time, String pref)
     {
         try {
             if(pref.equalsIgnoreCase("weekend")) foodItem+="_w";
 
-            sortedAdd(getList(time), foodItem);
-            userPref.put(time, new JSONArray(getList(time)));
+            sortedAdd(getFullList(time), foodItem);
+            userPref.put(time, new JSONArray(getFullList(time)));
             updateDB();
         }
         catch(Exception e)
